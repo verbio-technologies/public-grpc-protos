@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package speechcenter.recognizer.v1;
+package speechcenter.stt.v1;
 
 /*
 The stream of recognition requests will be composed by a first RecognitionConfig message followed by one or more audio

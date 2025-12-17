@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package speechcenter.recognizer.v1;
+package speechcenter.stt.v1;
 
 message RecognitionStreamingResponse {
     oneof recognition_response {
