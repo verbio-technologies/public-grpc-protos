@@ -32,23 +32,27 @@ managed:
     default: example.com/your/module/gen/go
 plugins:
   - plugin: buf.build/protocolbuffers/go
-    out: gen/go
+    out: gen
     opt: paths=source_relative
   - plugin: buf.build/grpc/go
-    out: gen/go
+    out: gen
     opt: paths=source_relative
+inputs:
+  - git_repo: https://github.com/verbio-technologies/public-grpc-protos.git
+    branch: 1.0.0
 ```
 
-2) Generate the Go code to `./gen/go` by pointing buf at the `proto` directory in this repo:
+2) Generate the Go code
 
 ```
-buf generate https://github.com/verbio-technologies/public-grpc-protos.git#tag=1.0.0,subdir=proto
+buf generate
 ```
 
-This will create Go files under `gen/go/speechcenter/recognizer/v1/` for:
-- `recognition.proto` (service + common types)
-- `recognition_streaming_request.proto`
-- `recognition_streaming_response.proto`
+This will create Go files under `gen/speechcenter/[stt|tts]` for:
+- `[recognition.proto](speechcenter/stt/recognition.proto)` (service + common types)
+- `[recognition_streaming_request.proto](speechcenter/stt/recognition_streaming_request.proto)`
+- `[recognition_streaming_response.proto](speechcenter/stt/recognition_streaming_response.proto)`
+- `[text_to_speech.proto](speechcenter/tts/text_to_speech.proto)`
 
 ## Versioning
 
