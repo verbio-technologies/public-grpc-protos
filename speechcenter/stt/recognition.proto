@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package speechcenter.stt.v1;
+package speechcenter.recognizer.v1;
 
 import "speechcenter/stt/recognition_streaming_request.proto";
 import "speechcenter/stt/recognition_streaming_response.proto";
