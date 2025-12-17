@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package speechcenter.tts.v1;
+package tts_grpc_gateway.v1;
 
 service TextToSpeech {
   rpc ListVoices(ListVoicesRequest) returns (ListVoicesResponse) {}
