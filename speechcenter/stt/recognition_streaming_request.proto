@@ -2,135 +2,135 @@ syntax = "proto3";
 
 package speechcenter.recognizer.v1;
 
-/*
-The stream of recognition requests will be composed by a first RecognitionConfig message followed by one or more audio
-messages containing raw audio. It can optionally include EventMessages at any point after the first Config message.
-An EventMessage of type END_OF_STREAM must be sent as a final message.
- */
+
+// The contract for streaming recognition requests.
+// The stream must begin with a single `RecognitionConfig` message.
+// Subsequent messages may contain `audio` (raw bytes) or `event_message` (control signals).
+// To close the stream properly, the client must send an `EventMessage` of type `END_OF_STREAM`.
 message RecognitionStreamingRequest {
     oneof recognition_request {
-      // Header like first streaming configuration message.
-      RecognitionConfig config = 1;
+        // The initial configuration message. Must be the first message sent in the stream.
+        RecognitionConfig config = 1;
 
-      // Raw audio in the selected format.
-      bytes audio = 2;
+        // A chunk of raw audio data in the selected format.
+        bytes audio = 2;
 
-      //Message to signal an Event during the stream.
-      EventMessage event_message = 3;
+        // A control message to signal specific events during the stream.
+        EventMessage event_message = 3;
     }
-  }
-  
-  // An init message with the recognition data.
-  message RecognitionConfig {
+}
+
+// The initialization message containing recognition parameters.
+message RecognitionConfig {
     enum AsrVersion {
-      V1 = 0;
-      V2 = 1;
+        V1 = 0;
+        V2 = 1;
     }
 
-    // General parameters for the recognition, such as language.
+    // General parameters for the recognition (e.g., language, audio format).
     RecognitionParameters parameters = 1;
 
-    // The request must specify a topic.
+    // The recognition resource (topic or grammar) to be used.
     RecognitionResource resource = 2;
 
-    // The version of the speech recognition software to be used. Each version may support a different set of languages, topics and features.
+    // The version of the speech recognition engine. 
+    // Versions may support different languages, topics, and features.
     AsrVersion version = 3;
 
-    // Timer configurations for MRCP.
+    // Timer configurations for MRCP-like behavior.
     optional TimerConfiguration configuration = 4;
 
-    /* Labels to apply to this recognition, for billing purposes. Can be one or multiple.
-    Billing information can later be grouped by label. There can be None to up to 64 labels in a request,
-    and each label can have up to 256 characters.  */
+    // Labels to apply to this recognition for billing and grouping purposes.
+    // Up to 1 label is allowed, with a maximum of 128 characters.
     repeated string label = 5;
 }
-  
-  message RecognitionParameters {
 
-    /* This message will contain the language locale of your audio in IETF BCP 47 format.
-    Supported languages will differ with each AsrVersion. */
+message RecognitionParameters {
+    // The language locale of the audio in IETF BCP 47 format (e.g., "en-US").
+    // Supported languages vary by AsrVersion.
     string language = 1;
 
     oneof AudioEncoding {
-      PCM pcm = 2; // Linear Pulse-Code Modulation with signed 16 bit samples, little endian byte order.
+        // Linear Pulse-Code Modulation (signed 16-bit samples, little-endian).
+        PCM pcm = 2;
     }
 
-    //Set to the number of channels if speaker separation per channel is desired
+    // The number of audio channels. Set this if speaker separation per channel is desired.
     optional uint32 audio_channels_number = 3;
 
-    //Enable output formatting, only available in certain languages.  Premium feature on V1.
+    // If true, enables output formatting (punctuation, capitalization). 
+    // Only available for certain languages. Premium feature on V1.
     bool enable_formatting = 4;
 
-    // Enable output diarization. Premium feature on V1.
+    // If true, enables speaker diarization. Premium feature on V1.
     bool enable_diarization = 5;
+}
 
-  }
-
-  message PCM {
-    // Audio sample rate in Hertz.
+message PCM {
+    // The audio sample rate in Hertz.
     uint32 sample_rate_hz = 1;
-  }
-  
-  // The request must specify a topic.
-  message RecognitionResource {
+}
+
+// Specifies the domain model or grammar for recognition.
+message RecognitionResource {
     enum Topic {
-      GENERIC = 0;    // Suitable for any generic speech
-      BANKING = 1;    // Transcription will be optimized for banking recordings
-      TELCO = 2;      // Transcription will be optimized for telecommunications companies
-      INSURANCE = 3;  // Transcription will be optimized for insurance companies
+        // Suitable for generic speech.
+        GENERIC = 0;
+        // Optimized for banking recordings.
+        BANKING = 1;
+        // Optimized for telecommunications.
+        TELCO = 2;
+        // Optimized for insurance.
+        INSURANCE = 3;
     }
 
     oneof Resource {
-      // The topic will determine the topic used for the recognition.
-      Topic topic = 1;
+        // A pre-defined topic model to use for recognition.
+        Topic topic = 1;
 
-      //ABNF grammar resource
-      GrammarResource grammar = 2;
+        // An ABNF grammar resource.
+        GrammarResource grammar = 2;
     }
-  }
+}
 
-  message GrammarResource {
+message GrammarResource {
     oneof Grammar {
-      //The text of the ABNF grammar as an inline string
-      string inline_grammar = 1;
+        // The ABNF grammar text provided inline.
+        string inline_grammar = 1;
 
-      //An URI to a grammar provided by online Verbio services
-      string grammar_uri = 2;
+        // A URI pointing to a grammar provided by online Verbio services.
+        string grammar_uri = 2;
 
-      //A binary grammar precompiled by Verbio services
-      bytes compiled_grammar = 3;
+        // A binary grammar precompiled by Verbio services.
+        bytes compiled_grammar = 3;
     }
-  }
+}
 
-  message TimerConfiguration {
-
-    /* After voice has been detected but no results are received from the ASR engine,
-    the recognition  will be finished with a “No Match” completion cause.
-     */
+message TimerConfiguration {
+    // The duration in milliseconds to wait for speech detection.
+    // If no speech is detected within this time, the operation ends with a "No Match" cause.
     optional uint32 recognition_timeout = 1;
 
-    /* If set to false, do not start timers until a message StreamingRecognizeRequest::EventMessage
-     with the event type "START_INPUT_TIMERS" is received.
-     */
+    // If false, input timers will not start until an `EventMessage` 
+    // of type `START_INPUT_TIMERS` is received.
     optional bool start_input_timers = 2;
 
-
-    /* How long the recognizer should wait for more speech when already having a complete result.
-     */
+    // The duration in milliseconds to wait for more speech after a complete result is detected.
     optional uint32 speech_complete_timeout = 3;
 
-    /* How long the recognizer should wait for more speech when having only a partial result.
-    This differs from the Recognition-Timeout because in this case a partial match is returned instead of a No-Match.
-    */
+    // The duration in milliseconds to wait for more speech when only a partial result is detected.
+    // Unlike `recognition_timeout`, this returns a partial match rather than "No Match".
     optional uint32 speech_incomplete_timeout = 4;
 }
 
 message EventMessage {
-  enum Event {
-    //Event to signal the server to start the input timers.
-    START_INPUT_TIMERS = 0;
-    //Event to signal the server that there will be no more audio to transcribe.
-    END_OF_STREAM = 1;
-  }
-  Event event = 1;
+    enum Event {
+        // Signals the server to start the input timers.
+        START_INPUT_TIMERS = 0;
+        // Signals the server that no further audio will be sent.
+        END_OF_STREAM = 1;
+    }
+
+    // The type of event being signaled.
+    Event event = 1;
 }

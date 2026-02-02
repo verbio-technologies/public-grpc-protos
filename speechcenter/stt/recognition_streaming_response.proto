@@ -4,69 +4,91 @@ package speechcenter.recognizer.v1;
 
 message RecognitionStreamingResponse {
     oneof recognition_response {
-        // If set, specifies the error for the operation.
+        // If set, returns the error that prevented the operation.
         RecognitionError error = 1;
 
-        // List of results corresponding to portions of the audio currently being processed.
+        // A recognition result for the audio currently being processed.
         RecognitionResult result = 2;
+
+        // If set, indicates that a specific speech event occurred.
+        SpeechEvent speech_event = 4;
     }
-    uint32 completion_cause = 3; //Numerical code corresponding to the MRCP standard completion causes.
+    // An MRCP standard completion cause code.
+    uint32 completion_cause = 3;
 }
 
-// A streaming recognition result corresponding to a portion of the audio that is currently being processed.
+// A streaming recognition result for a specific portion of the audio.
 message RecognitionResult {
-    // List of one or more recognition hypotheses ordered in terms of accuracy.
+    // A list of one or more recognition hypotheses, ordered by accuracy.
     repeated RecognitionAlternative alternatives = 1;
 
-    // Time offset relative to the beginning of the audio.
+    // The duration of the recognized audio segment.
     float duration = 2;
 
-    // Indicates whether a result represents an interim result that may change or not.
+    // If true, this is the final result for this audio segment. 
+    // If false, it is an interim result that may change.
     bool is_final = 3;
 
-    // Time offset relative to the beginning of the audio corresponding to the start of the audio segment.
+    // The start time of the audio segment, relative to the beginning of the stream.
     float start_time = 4;
-  
-    // Indicates whether a result ends on an endpoint or not.
+   
+    // If true, this result marks the end of an utterance (endpoint).
     bool is_endpoint = 5;
 }
 
 // Hypothesis-specific information.
 message RecognitionAlternative {
-    // Transcript text representing the words that the user spoke.
+    // Transcript text representing the words spoken by the user.
     string transcript = 1;
 
-    // The confidence estimate between 0.0 and 1.0.
+    // A confidence estimate between 0.0 and 1.0.
     float confidence = 2;
 
-    // A list of word-specific information for each recognized word.
+    // A list of word-specific details for each recognized word.
     repeated WordInfo words = 3;
 }
 
 // Word-specific information for recognized words.
 message WordInfo {
-    // Time offset in seconds relative to the beginning of the audio corresponding to the start of the spoken word.
+    // The start time of the word in seconds, relative to the beginning of the audio.
     float start_time = 1;
-    // Time offset in seconds relative to the beginning of the audio corresponding to the end of the spoken word.
+
+    // The end time of the word in seconds, relative to the beginning of the audio.
     float end_time = 2;
+
     // The spoken word.
     string word = 3;
-    // The confidence estimate between 0.0 and 1.0.
+
+    // A confidence estimate between 0.0 and 1.0.
     float confidence = 4;
-    //Natural number identifying the speaker
+
+    // A unique number identifying the speaker.
     uint32 speaker_id = 5;
 }
 
+message SpeechEvent {
+    enum Event {
+        // Indicates that the start of speech was detected in the audio stream.
+        SPEECH_START = 0;
+    }
+
+    // The type of speech event.
+    Event type = 1;
+
+    // The time offset in seconds, relative to the beginning of the audio, where the event was detected.
+    float time_offset = 2;
+}
+
 message RecognitionError {
-    // The reason of the error. This is a constant value that identifies the
-    // proximate cause of the error.
+    // The reason for the error. This is a constant value that identifies the
+    // proximate cause.
     string reason = 1;
 
     // The logical grouping to which the "reason" belongs. The error domain
     // is typically the registered service name of the tool or product that
-    // generates the error.
+    // generated the error.
     string domain = 2;
 
-    // Additional structured details about this error. Usually pictured as a JSON.
+    // Additional structured details about this error, usually formatted as JSON.
     map<string, string> metadata = 3;
 }
