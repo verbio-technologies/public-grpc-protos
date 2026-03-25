@@ -26,20 +26,19 @@ managed plugins. It does not require any additional configuration files in the r
 version: v2
 managed:
   enabled: true
-  # buf will inject missing go_package options using this prefix so modern
-  # protoc-gen-go works even though the protos don’t declare go_package.
-  go_package_prefix:
-    default: example.com/your/module/gen/go
+  override:
+    - file_option: go_package_prefix
+      value: example.com/your/module/gen/go
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - remote: buf.build/protocolbuffers/go
     out: gen
     opt: paths=source_relative
-  - plugin: buf.build/grpc/go
+  - remote: buf.build/grpc/go
     out: gen
     opt: paths=source_relative
 inputs:
   - git_repo: https://github.com/verbio-technologies/public-grpc-protos.git
-    branch: 1.0.0
+    branch: 1.2.0
 ```
 
 2) Generate the Go code
