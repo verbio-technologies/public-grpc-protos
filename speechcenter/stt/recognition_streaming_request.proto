@@ -64,6 +64,9 @@ message RecognitionParameters {
 
     // If true, enables speaker diarization. Premium feature on V1.
     bool enable_diarization = 5;
+
+    // A list of keyword terms. Feature on V1.
+    repeated string word_boosting = 6;
 }
 
 message PCM {
