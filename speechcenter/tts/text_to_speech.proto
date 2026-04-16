@@ -34,6 +34,7 @@ message SynthesisRequest {
   string voice = 2;
   VoiceSamplingRate sampling_rate = 3;
   AudioFormat format = 4;
+  string label = 5;
 }
 
 message SynthesisResponse {
