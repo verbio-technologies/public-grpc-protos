@@ -43,8 +43,7 @@ message PronunciationEntry {
 message SynthesisConfig {
   string voice = 1;
   VoiceSamplingRate sampling_rate = 2;
-  string label = 3;
-  
+  string label = 3;  
   // An optional list of custom pronunciations to apply during synthesis.
   repeated PronunciationEntry pronunciation_dictionary = 4;
 }
