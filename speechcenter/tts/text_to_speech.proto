@@ -13,7 +13,14 @@ message ListVoicesRequest {
 }
 
 message ListVoicesResponse {
-  repeated string voices = 1;
+  repeated Voice voices = 1;
+}
+
+message Voice {
+  string name = 1;
+  string code = 2;
+  string language = 3;
+  string gender = 4;
 }
 
 message StreamingSynthesisRequest {
