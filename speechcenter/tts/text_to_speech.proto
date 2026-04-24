@@ -54,6 +54,8 @@ message SynthesisRequest {
   VoiceSamplingRate sampling_rate = 3;
   AudioFormat format = 4;
   string label = 5;
+  // An optional list of custom pronunciations to apply during synthesis.
+  repeated PronunciationEntry pronunciation_dictionary = 6;
 }
 
 message SynthesisResponse {
