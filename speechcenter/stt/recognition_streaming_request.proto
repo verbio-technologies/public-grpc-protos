@@ -76,7 +76,11 @@ message PCM {
 
 // Specifies the domain model or grammar for recognition.
 message RecognitionResource {
+    // Deprecated: use `topic_name` instead. This enum will be
+    // removed in the future.
     enum Topic {
+        option deprecated = true;
+
         // Suitable for generic speech.
         GENERIC = 0;
         // Optimized for banking recordings.
@@ -88,11 +92,17 @@ message RecognitionResource {
     }
 
     oneof Resource {
-        // A pre-defined topic model to use for recognition.
-        Topic topic = 1;
+        // Deprecated: use `topic_name` instead. This field will be
+        // removed in a future coordinated release.
+        Topic topic = 1 [deprecated = true];
 
         // An ABNF grammar resource.
         GrammarResource grammar = 2;
+
+        // The topic to use for recognition, as a free-form string
+        // (e.g., "generic", "banking"). Replaces the deprecated `topic`
+        // enum member.
+        string topic_name = 3;
     }
 }
 
