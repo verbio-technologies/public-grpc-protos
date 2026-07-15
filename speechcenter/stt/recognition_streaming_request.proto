@@ -98,12 +98,12 @@ message RecognitionResource {
 
         // An ABNF grammar resource.
         GrammarResource grammar = 2;
-    }
 
-    // The topic or custom language model to use for recognition, as a
-    // free-form string (e.g., "generic", "banking"). Replaces the deprecated
-    // `topic` enum member.
-    optional string custom_language_model = 3;
+        // The topic or custom language model to use for recognition, as a
+        // free-form string (e.g., "generic", "banking"). Replaces the
+        // deprecated `topic` enum member.
+        string custom_language_model = 3;
+    }
 }
 
 message GrammarResource {
