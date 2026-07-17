@@ -17,10 +17,11 @@ message ListVoicesResponse {
 }
 
 message Voice {
-  string name = 1;
-  string code = 2;
-  string language = 3;
-  string gender = 4;
+  string name = 1;     // Display name of the voice
+  string id = 2;       // Voice identifier used in synthesis requests
+  string language = 3; // BCP-47 language code, e.g. "en-US"
+  string gender = 4;   // Gender of the voice
+  string provider = 5; // TTS backend provider
 }
 
 message StreamingSynthesisRequest {
