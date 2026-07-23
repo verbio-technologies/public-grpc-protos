@@ -45,8 +45,8 @@ message RecognitionConfig {
     repeated string label = 5;
 
     // An speech recognition provider. When unset, the gateway selects
-    // a provider implicitly from the resource type and `version` (legacy
-    // behavior). Accepted values: "deepgram", "asr4", "asr3", "capacity".
+    // a provider implicitly from the resource type and `version`. This is
+    // a free-form string.
     optional string provider = 6;
 
 }
