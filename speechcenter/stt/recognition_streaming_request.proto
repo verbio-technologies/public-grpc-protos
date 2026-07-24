@@ -43,6 +43,12 @@ message RecognitionConfig {
     // Labels to apply to this recognition for billing and grouping purposes.
     // Up to 1 label is allowed, with a maximum of 128 characters.
     repeated string label = 5;
+
+    // An speech recognition provider. When unset, the gateway selects
+    // a provider implicitly from the resource type and `version`. This is
+    // a free-form string.
+    optional string provider = 6;
+
 }
 
 message RecognitionParameters {
