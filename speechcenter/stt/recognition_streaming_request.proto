@@ -37,7 +37,7 @@ message RecognitionConfig {
     // Versions may support different languages, topics, and features.
     AsrVersion version = 3;
 
-    // Timer configurations for MRCP-like behavior.
+    // Timer configuration for the recognition, following the MRCP timers.
     optional TimerConfiguration configuration = 4;
 
     // Labels to apply to this recognition for billing and grouping purposes.
@@ -126,17 +126,21 @@ message GrammarResource {
 }
 
 message TimerConfiguration {
+    // Not yet supported: the value is accepted but has no effect.
     // The duration in milliseconds to wait for speech detection.
     // If no speech is detected within this time, the operation ends with a "No Match" cause.
     optional uint32 recognition_timeout = 1;
 
-    // If false, input timers will not start until an `EventMessage` 
+    // Not yet supported: the value is accepted but has no effect.
+    // If false, input timers will not start until an `EventMessage`
     // of type `START_INPUT_TIMERS` is received.
     optional bool start_input_timers = 2;
 
-    // The duration in milliseconds to wait for more speech after a complete result is detected.
+    // The duration in milliseconds of silence after speech that completes the utterance.
+    // When unset, the recognizer applies its own default.
     optional uint32 speech_complete_timeout = 3;
 
+    // Not yet supported: the value is accepted but has no effect.
     // The duration in milliseconds to wait for more speech when only a partial result is detected.
     // Unlike `recognition_timeout`, this returns a partial match rather than "No Match".
     optional uint32 speech_incomplete_timeout = 4;
