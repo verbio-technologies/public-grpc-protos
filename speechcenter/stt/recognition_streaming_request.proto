@@ -73,6 +73,10 @@ message RecognitionParameters {
 
     // A list of keyword terms. Feature on V1.
     repeated string word_boosting = 6;
+
+    // If true, enables background noise reduction when the recognizer supports it;
+    // otherwise accepted with no effect. When unset, the recognizer default applies.
+    optional bool enable_noise_reduction = 7;
 }
 
 message PCM {
