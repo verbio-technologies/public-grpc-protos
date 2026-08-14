@@ -75,8 +75,8 @@ message RecognitionParameters {
     repeated string word_boosting = 6;
 
     // If true, enables background noise reduction when the recognizer supports it;
-    // otherwise accepted with no effect. When unset, the recognizer default applies.
-    optional bool enable_noise_reduction = 7;
+    // otherwise accepted with no effect. Defaults to false.
+    bool enable_noise_reduction = 7;
 }
 
 message PCM {
